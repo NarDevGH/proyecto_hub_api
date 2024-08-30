@@ -1,9 +1,12 @@
 from flask import Flask, jsonify, request
 from flask_mysqldb import MySQL 
+from flask_cors import CORS, cross_origin
 
 from config import config
 
 app=Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 conexion=MySQL(app)
 
@@ -48,8 +51,9 @@ def registrar():
             sql = "INSERT INTO perfiles (usuario_id, perfil) VALUES(%s, %s)"
             cursor.execute(sql,(usuario_id,perfil))
         #clave=lenguaje, valor=nivel
-        for clave, valor in lenguajes.items():
-            cursor.execute("INSERT INTO lenguajes (usuario_id, lenguaje, nivel) VALUES (%s, %s, %s)", (usuario_id, clave, valor))
+        print(lenguajes)
+        for lenguaje in lenguajes:
+            cursor.execute("INSERT INTO lenguajes (usuario_id, lenguaje, nivel) VALUES (%s, %s, %s)", (usuario_id, lenguaje, 1))
         conexion.connection.commit()
         return jsonify({"mensaje": "Usuario registrado"}),409      
     except Exception as ex: 
@@ -61,9 +65,9 @@ def registrar():
 
 # mostrar participantes
 @app.route('/usuarios', methods=["GET"]) 
+@cross_origin()
 def mostrar_usuarios():
-    nombre = request.args.get('nombre')
-    apellido = request.args.get('apellido')
+    email = request.args.get('email')
     try:
         cursor=conexion.connection.cursor()
         sql = """
@@ -90,12 +94,9 @@ def mostrar_usuarios():
             """
         #agregar nombre y apellido a la consulta sql
         parametros = []
-        if nombre:
-            sql += "AND nombre = %s"
-            parametros.append(nombre)
-        if apellido:
-            sql += "AND apellido = %s"
-            parametros.append(apellido)
+        if email:
+            sql += "AND email = %s"
+            parametros.append(email)
         # ejecura consulta
         cursor.execute(sql, parametros)
         datos=cursor.fetchall()
@@ -109,7 +110,7 @@ def mostrar_usuarios():
                         "nombre": user[1],
                         "apellido": user[2],
                         "email": user[3],
-                        "contraseña": user[4],
+                        "password": user[4],
                         "informacion": user[5],
                         "image": user[6],
                         "perfiles": [], 
