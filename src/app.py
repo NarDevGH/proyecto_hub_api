@@ -51,9 +51,9 @@ def registrar():
             sql = "INSERT INTO perfiles (usuario_id, perfil) VALUES(%s, %s)"
             cursor.execute(sql,(usuario_id,perfil))
         #clave=lenguaje, valor=nivel
-        print(lenguajes)
+        # print(lenguajes)
         for lenguaje in lenguajes:
-            cursor.execute("INSERT INTO lenguajes (usuario_id, lenguaje, nivel) VALUES (%s, %s, %s)", (usuario_id, lenguaje, 1))
+            cursor.execute("INSERT INTO lenguajes (usuario_id, lenguaje, nivel) VALUES (%s, %s, %s)", (usuario_id, lenguaje['nombre'], 1))
         conexion.connection.commit()
         return jsonify({"mensaje": "Usuario registrado"}),409      
     except Exception as ex: 
