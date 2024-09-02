@@ -26,7 +26,7 @@ def registrar():
     email = datos.get('email')
     password = datos.get('password')
     informacion_adicional = datos.get('informacion_adicional')
-    image = datos.get('image') #cursor de tiempo para que baje en tiempo real
+    image = datos.get('imagen') #cursor de tiempo para que baje en tiempo real
     perfiles = datos.get('perfiles')
     lenguajes = datos.get('lenguajes')    
     try: 
@@ -103,7 +103,8 @@ def mostrar_usuarios():
         if datos:
             usuarios_dict = {}        
             for user in datos:
-                user_id = user[0]            
+                user_id = user[0]       
+                print(user)     
                 if user_id not in usuarios_dict:
                     usuarios_dict[user_id] = {
                         "id": user_id,
